@@ -33,4 +33,4 @@ jobs:
 
       - name: Deploy Prefect Flow
         run: |
-          prefect deploy --name flow --pool apixv_docker_pool flow/say_message_flow.py
+          prefect deploy --name flow --pool apixv_docker_pool flow/say_message_flow.py:say_message_flow
