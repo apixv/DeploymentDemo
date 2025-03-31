@@ -1,0 +1,36 @@
+name: Deploy Prefect Flow to Cloud
+
+on:
+  push:
+    branches:
+      - main   # Trigger on push to main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install prefect
+
+      - name: Authenticate with Prefect Cloud
+        run: |
+          prefect cloud login --key "${{ secrets.PREFECT_API_KEY }}" --workspace "apixv/default"
+          
+      - name: flow to Prefect Cloud
+        run: |
+          python flow/say_message_flow.py
+
+      - name: Deploy Prefect Flow
+        run: |
+          prefect deploy --name flow --pool apixv_docker_pool flow/say_message_flow.py
